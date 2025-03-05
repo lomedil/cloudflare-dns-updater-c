@@ -1,9 +1,10 @@
 #!/bin/bash
 
 THIS_DIR=$(realpath "$0" | xargs dirname)
-TEST_BIN=$THIS_DIR/build/main/test/test
+ROOT_DIR=$(realpath "$THIS_DIR/..")
+TEST_BIN=$ROOT_DIR/build/main/test/test
 
-cd $THIS_DIR/build/
+cd $ROOT_DIR/build/
 
 cmake --build .
 if [ $? -eq 0 ]; then

@@ -1,9 +1,18 @@
 #include "greatest.h"
 #include "test_args.h"
 
+#include <logger.h>
+
 GREATEST_MAIN_DEFS();
 
 int main(int argc, char **argv) {
+    log_initialize(kConsole);
+
+    log_trace("Hello trace");
+    log_debug("Hello debug");
+    log_info("Hello info");
+    log_warn("Hello warn");
+    log_error("Hello error");
 
     GREATEST_MAIN_BEGIN();      /* command-line options, initialization. */
 
