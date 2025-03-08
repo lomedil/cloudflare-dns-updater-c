@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.12)
 
 project(cf-updater)
 
-enable_testing()
 
 file(GLOB TEST_SOURCES src/*.c)
 file(GLOB TEST_HEADERS src/*.h)

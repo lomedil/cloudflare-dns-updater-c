@@ -6,14 +6,10 @@
 
 GREATEST_MAIN_DEFS();
 
-int main(int argc, char **argv) {
-    log_initialize(kConsole);
+void test_logs();
 
-    log_trace("Hello trace");
-    log_debug("Hello debug");
-    log_info("Hello info");
-    log_warn("Hello warn");
-    log_error("Hello error");
+int main(int argc, char **argv) {
+    //log_initialize(kConsole);
 
     GREATEST_MAIN_BEGIN();      /* command-line options, initialization. */
 

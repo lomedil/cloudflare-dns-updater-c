@@ -5,6 +5,8 @@ ROOT_DIR=$(realpath "$THIS_DIR/..")
 
 cd $ROOT_DIR
 
+[[ -d "build" ]] && rm -rf build
+
 if [ ! -d "build" ]; then
     mkdir build
 fi
