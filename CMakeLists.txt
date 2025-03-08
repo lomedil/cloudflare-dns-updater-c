@@ -4,3 +4,4 @@ project(cf-updater)
 
 add_subdirectory(main/lib)
 add_subdirectory(main/test)
+add_subdirectory(main/cli)
