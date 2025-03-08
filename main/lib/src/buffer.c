@@ -44,6 +44,26 @@ void buffer_release(buffer_t *buffer)
     buffer->size = 0;
 }
 
+buffer_t buffer_take(buffer_t *source)
+{
+    buffer_t output = *source;
+
+    // Mark as non initialized
+    source->data = 0;
+    source->size = 0;
+
+    return output;
+}
+
+buffer_t buffer_clone(buffer_t *source)
+{
+    buffer_t output = buffer_init(source->size);
+
+    memcpy(output.data, source->data, source->size);
+
+    return output;
+}
+
 void buffer_clear(buffer_t *buffer)
 {
     if(buffer->data != 0)

@@ -18,4 +18,8 @@ void buffer_release(buffer_t *buffer);
 
 void buffer_clear(buffer_t *buffer);
 
+buffer_t buffer_take(buffer_t *buffer);
+
+buffer_t buffer_clone(buffer_t *buffer);
+
 #endif //!__BUFFFER__H_
