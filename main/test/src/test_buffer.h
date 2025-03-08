@@ -23,6 +23,17 @@ TEST buffer_release_test() {
     PASS();
 }
 
+TEST buffer_aligned4_intialization_test() {
+    buffer_t buffer = buffer_init(21);
+
+    ASSERT_EQ(buffer.size, 24);
+    ASSERT_NEQ(buffer.data, 0);
+
+    buffer_release(&buffer);
+
+    PASS();
+}
+
 TEST buffer_ensure_space_test() {
     buffer_t buffer = buffer_init(16);
     
@@ -62,6 +73,7 @@ TEST buffer_no_change_space_test() {
 
 SUITE(buffer_suite){
     RUN_TEST(buffer_initialize_test);
+    RUN_TEST(buffer_aligned4_intialization_test);
     RUN_TEST(buffer_release_test);
     RUN_TEST(buffer_ensure_space_test);
     RUN_TEST(buffer_no_change_space_test);

@@ -2,8 +2,13 @@
 
  #include "logger.h"
 
+ #define __align4(x) ((0 == x%4) ? x : ((x>>2)<<2)+4)
+
 buffer_t buffer_init(int size){
     buffer_t output = {0};
+
+    size = __align4(size);
+
     output.data = (char *) malloc(size);
     memset(output.data, 0, sizeof(size));
     output.size = size;
@@ -15,7 +20,8 @@ int buffer_ensure_space(buffer_t *buffer, int new_size)
     int old_size = buffer->size;
     if(new_size <= old_size) return 0;
 
-    log_fmt_trace("Creating new buffer for %d bytes", new_size);
+    new_size = __align4(new_size);
+
     char *new_buffer = (char *)malloc(new_size);
     memcpy(new_buffer, buffer->data, buffer->size);
 
