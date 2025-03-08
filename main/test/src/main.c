@@ -1,5 +1,6 @@
 #include "greatest.h"
 #include "test_args.h"
+#include "test_buffer.h"
 
 #include <logger.h>
 
@@ -22,6 +23,7 @@ int main(int argc, char **argv) {
     /* Tests can also be gathered into test suites. */
     
     RUN_SUITE(args_suite);
+    RUN_SUITE(buffer_suite);
 
     GREATEST_MAIN_END();        /* display results */
 
