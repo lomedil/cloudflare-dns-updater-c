@@ -8,15 +8,17 @@
 #include <args.h>
 #include <cloudflare.h>
 
+#include "cli_parser.h" 
+
 typedef int cli_error;
 const cli_error CLIE_OK = 0;
-const cli_error CLIE_UNKNOWN_COMMAND = 1;
-const cli_error CLIE_CANNOT_CONNECT = 2;
-const cli_error CLIE_NO_ZONE_DEFINED = 3;
-const cli_error CLIE_NO_RECORD_DEFINED = 3;
-const cli_error CLIE_NO_TOKEN_DEFINED = 3;
-const cli_error CLIE_INVALID_RESPONSE = 3;
-const cli_error CLIE_DNS_NOT_UPDATED = 7;
+const cli_error CLIE_UNKNOWN_COMMAND    = 1;
+const cli_error CLIE_CANNOT_CONNECT     = 2;
+const cli_error CLIE_NO_ZONE_DEFINED    = 3;
+const cli_error CLIE_NO_RECORD_DEFINED  = 4;
+const cli_error CLIE_NO_TOKEN_DEFINED   = 5;
+const cli_error CLIE_INVALID_RESPONSE   = 6;
+const cli_error CLIE_DNS_NOT_UPDATED    = 7;
 
 #define array_size(arr) (sizeof(arr) / sizeof(arr[0]))
 
@@ -29,17 +31,20 @@ int main(int argc, char **argv)
 {
     log_initialize(kConsole);
 
-    args_cmd cli = args_command(args_init(argc, argv));
+    cli_cmd cli = args_command(args_init(argc, argv));
 
-    switch (kUpdate)
+    switch (cli.cmd)
     {
-    case kCheck:
+    case kCmdHelp:
+        printf("%s", CLI_USAGE);
+        return CLIE_OK;
+    case kCmdCheck:
         return check_command();
-    case kUpdate:
+    case kCmdUpdate:
         return update_command(cli.params);
-    case kUnknown:
-        fprintf(stderr, "Unknown subcommand");
-        exit(CLIE_UNKNOWN_COMMAND);
+    case kCmdUnknown:
+        fprintf(stderr, "Unknown subcommand\n");
+        return CLIE_UNKNOWN_COMMAND;
         break;
     }
 

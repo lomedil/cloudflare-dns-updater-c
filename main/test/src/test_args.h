@@ -1,67 +1,17 @@
 #include "greatest.h"
 #include <args.h>
 
-
-
-TEST args_find_update_cmd()
-{
-    char *args[] = {
-        "program",
-        "update",
-    };
-
-    args_cli cli = args_init(2, args);
-    args_cmd cmd = args_command(cli);
-
-    ASSERT_EQ(cmd.cmd, kUpdate);
-
-    PASS();
-}
-
-TEST args_find_check_cmd()
-{
-    char *args[] = {
-        "program",
-        "check",
-    };
-
-    args_cli cli = args_init(2, args);
-    args_cmd cmd = args_command(cli);
-
-    ASSERT_EQ(cmd.cmd, kCheck);
-
-    PASS();
-}
-
-TEST args_find_unknown_cmd()
-{
-    char *args[] = {
-        "program",
-        "--user",
-        "noname"
-    };
-
-    args_cli cli = args_init(3, args);
-    args_cmd cmd = args_command(cli);
-
-    ASSERT_EQ(cmd.cmd, kUnknown);
-
-    PASS();
-}
-
 TEST args_read_long_param()
 {
     char *args[] = {
         "program",
         "check",
         "--user",
-        "noname"
-    };
+        "noname"};
 
     args_cli cli = args_init(4, args);
-    args_cmd cmd = args_command(cli);
 
-    args_psz user = args_parameter(cmd.params, "u", "user");
+    args_psz user = args_parameter(cli, "u", "user");
 
     ASSERT_NEQ(user, NULL);
     ASSERT_STR_EQ(user, "noname");
@@ -75,13 +25,11 @@ TEST args_read_short_param()
         "program",
         "check",
         "-u",
-        "noname"
-    };
+        "noname"};
 
     args_cli cli = args_init(4, args);
-    args_cmd cmd = args_command(cli);
 
-    args_psz user = args_parameter(cmd.params, "u", "user");
+    args_psz user = args_parameter(cli, "u", "user");
 
     ASSERT_NEQ(user, NULL);
     ASSERT_STR_EQ(user, "noname");
@@ -97,13 +45,11 @@ TEST args_read_not_first_param()
         "--host",
         "moggle.com",
         "--user",
-        "noname"
-    };
+        "noname"};
 
     args_cli cli = args_init(6, args);
-    args_cmd cmd = args_command(cli);
 
-    args_psz user = args_parameter(cmd.params, "u", "user");
+    args_psz user = args_parameter(cli, "u", "user");
 
     ASSERT_NEQ(user, NULL);
     ASSERT_STR_EQ(user, "noname");
@@ -117,19 +63,16 @@ TEST args_ret_null_param_not_found()
         "program",
         "check",
         "--host",
-        "moogle.com"
-    };
+        "moogle.com"};
 
     args_cli cli = args_init(4, args);
-    args_cmd cmd = args_command(cli);
 
-    args_psz user = args_parameter(cmd.params, "u", "user");
+    args_psz user = args_parameter(cli, "u", "user");
 
     ASSERT_EQ(user, NULL);
 
     PASS();
 }
-
 
 TEST args_ret_null_no_more_params()
 {
@@ -140,37 +83,19 @@ TEST args_ret_null_no_more_params()
     };
 
     args_cli cli = args_init(3, args);
-    args_cmd cmd = args_command(cli);
 
-    args_psz user = args_parameter(cmd.params, "u", "user");
+    args_psz user = args_parameter(cli, "u", "user");
 
     ASSERT_EQ(user, NULL);
 
     PASS();
 }
 
-TEST args_no_params_is_unknown()
+SUITE(args_suite)
 {
-    char *args[] = {
-        "program"
-    };
-
-    args_cli cli = args_init(1, args);
-    args_cmd cmd = args_command(cli);
-
-    ASSERT_EQ(cmd.cmd, kUnknown);
-
-    PASS();
-}
-
-SUITE(args_suite){
-    RUN_TEST(args_find_check_cmd);
-    RUN_TEST(args_find_update_cmd);
-    RUN_TEST(args_find_unknown_cmd);
     RUN_TEST(args_read_long_param);
     RUN_TEST(args_read_short_param);
     RUN_TEST(args_read_not_first_param);
     RUN_TEST(args_ret_null_param_not_found);
     RUN_TEST(args_ret_null_no_more_params);
-    RUN_TEST(args_no_params_is_unknown);
 }
