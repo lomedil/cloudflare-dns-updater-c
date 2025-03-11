@@ -4,5 +4,9 @@
 typedef unsigned char BOOL;
 typedef unsigned int UINT;
 
+typedef struct {
+    char* ptr;
+    int len;
+} slice_str;
 
 #endif
