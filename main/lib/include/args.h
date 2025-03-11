@@ -30,6 +30,6 @@ args_cli args_init(int argc, char **argv);
 
 args_cmd args_command(args_cli args);
 
-args_psz args_parameter(args_cmd args, char *short_name, char *long_name);
+args_psz args_parameter(args_cli args, char *short_name, char *long_name);
 
 #endif // !__ARGS__H__

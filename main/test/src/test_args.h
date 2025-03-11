@@ -1,6 +1,8 @@
 #include "greatest.h"
 #include <args.h>
 
+
+
 TEST args_find_update_cmd()
 {
     char *args[] = {
@@ -59,7 +61,7 @@ TEST args_read_long_param()
     args_cli cli = args_init(4, args);
     args_cmd cmd = args_command(cli);
 
-    args_psz user = args_parameter(cmd, "u", "user");
+    args_psz user = args_parameter(cmd.params, "u", "user");
 
     ASSERT_NEQ(user, NULL);
     ASSERT_STR_EQ(user, "noname");
@@ -79,7 +81,7 @@ TEST args_read_short_param()
     args_cli cli = args_init(4, args);
     args_cmd cmd = args_command(cli);
 
-    args_psz user = args_parameter(cmd, "u", "user");
+    args_psz user = args_parameter(cmd.params, "u", "user");
 
     ASSERT_NEQ(user, NULL);
     ASSERT_STR_EQ(user, "noname");
@@ -101,7 +103,7 @@ TEST args_read_not_first_param()
     args_cli cli = args_init(6, args);
     args_cmd cmd = args_command(cli);
 
-    args_psz user = args_parameter(cmd, "u", "user");
+    args_psz user = args_parameter(cmd.params, "u", "user");
 
     ASSERT_NEQ(user, NULL);
     ASSERT_STR_EQ(user, "noname");
@@ -121,7 +123,7 @@ TEST args_ret_null_param_not_found()
     args_cli cli = args_init(4, args);
     args_cmd cmd = args_command(cli);
 
-    args_psz user = args_parameter(cmd, "u", "user");
+    args_psz user = args_parameter(cmd.params, "u", "user");
 
     ASSERT_EQ(user, NULL);
 
@@ -140,9 +142,23 @@ TEST args_ret_null_no_more_params()
     args_cli cli = args_init(3, args);
     args_cmd cmd = args_command(cli);
 
-    args_psz user = args_parameter(cmd, "u", "user");
+    args_psz user = args_parameter(cmd.params, "u", "user");
 
     ASSERT_EQ(user, NULL);
+
+    PASS();
+}
+
+TEST args_no_params_is_unknown()
+{
+    char *args[] = {
+        "program"
+    };
+
+    args_cli cli = args_init(1, args);
+    args_cmd cmd = args_command(cli);
+
+    ASSERT_EQ(cmd.cmd, kUnknown);
 
     PASS();
 }
@@ -156,4 +172,5 @@ SUITE(args_suite){
     RUN_TEST(args_read_not_first_param);
     RUN_TEST(args_ret_null_param_not_found);
     RUN_TEST(args_ret_null_no_more_params);
+    RUN_TEST(args_no_params_is_unknown);
 }

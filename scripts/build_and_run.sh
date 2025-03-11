@@ -8,7 +8,7 @@ cd $ROOT_DIR/build/
 
 cmake --build .
 if [ $? -eq 0 ]; then
-    $CLI_BIN
+    $CLI_BIN $*
 else
     echo "Build failed"
     exit 1

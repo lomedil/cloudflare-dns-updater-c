@@ -1,6 +1,7 @@
 #include "greatest.h"
 #include "test_args.h"
 #include "test_buffer.h"
+#include "test_cloudflare.h"
 
 #include <logger.h>
 
@@ -20,6 +21,7 @@ int main(int argc, char **argv) {
     
     RUN_SUITE(args_suite);
     RUN_SUITE(buffer_suite);
+    RUN_SUITE(cloudflare_suite);
 
     GREATEST_MAIN_END();        /* display results */
 
