@@ -18,33 +18,37 @@ typedef struct
     curl_buffer req_body;
 } prepare_state;
 
-prepare_state prepare_curl_state(CURL *curl, http_req_opt *req)
+void prepare_curl_state(CURL *curl, http_req_opt *req, prepare_state *output)
 {
-    prepare_state output = {0};
+    if(!req) return; // empty
 
-    if(!req) return output; // empty
+    if (req->psz_body && 0 != strlen(req->psz_body))
+    {
+        curl_easy_setopt(curl, CURLOPT_POST, 1L);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, req->psz_body);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strlen(req->psz_body));
+    }
     
     if (req->bearer)
     {
-        curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BEARER);
-        curl_easy_setopt(curl, CURLOPT_XOAUTH2_BEARER, req->bearer);
+        char temp[256] = {0};
+        sprintf(temp, "Authorization: Bearer %s", req->bearer);
+        output->headers = curl_slist_append(output->headers, temp);
+
     }
 
     if (req->content_type)
     {
         char temp[256] = {0};
         sprintf(temp, "content-type: %s", req->content_type);
-        output.headers = curl_slist_append(output.headers, temp);
+        output->headers = curl_slist_append(output->headers, temp);
     }
 
-    if (req->body.data)
+    if(output->headers)
     {
-        output.req_body.buffer = req->body;
-        output.req_body.len = 0;
-        curl_easy_setopt(curl, CURLOPT_READDATA, &output.req_body);
+       curl_easy_setopt(curl, CURLOPT_HTTPHEADER, output->headers);
     }
 
-    return output;
 }
 
 void dispose_curl_state(prepare_state *state)
@@ -75,6 +79,7 @@ size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
     return bytes_to_write;
 }
 
+
 http_res *http_run(http_method method, const char* psz_url, http_req_opt *options)
 {
     http_res *res = 0;
@@ -84,16 +89,9 @@ http_res *http_run(http_method method, const char* psz_url, http_req_opt *option
     log_trace(TAG "Setting URL");
     curl_easy_setopt(curl, CURLOPT_URL, psz_url);
 
-    prepare_state state = prepare_curl_state(curl, options);
+    prepare_state state = {0};
+    prepare_curl_state(curl, options, &state);
 
-    // Init the response
-    log_trace(TAG "Preparing the response buffer");
-    response.len = 0;
-    response.buffer = buffer_init(256);
-
-    // Set the response function
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &write_callback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
     // Set method
     switch (method)
@@ -120,6 +118,16 @@ http_res *http_run(http_method method, const char* psz_url, http_req_opt *option
         break;
     }
 
+    
+    
+    // Init the response
+    log_trace(TAG "Preparing the response buffer");
+    response.len = 0;
+    response.buffer = buffer_init(256);
+
+    // Set the response function
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
     log_trace(TAG "Performing request");
     CURLcode code = curl_easy_perform(curl);

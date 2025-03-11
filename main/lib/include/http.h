@@ -6,7 +6,7 @@
 typedef  struct {
     char* bearer;
     char* content_type;
-    buffer_t body;
+    char* psz_body;
 }  http_req_opt;
 
 typedef struct{
